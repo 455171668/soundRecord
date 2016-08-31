@@ -2,7 +2,7 @@
 //  soundRecord.m
 //  soundPlay
 //
-//  Created by LIU on 16/8/30.
+//  Created by 刘志德 on 16/8/30.
 //  Copyright © 2016年 LZD. All rights reserved.
 //
 
@@ -36,8 +36,8 @@ static soundRecord *_record;
         [self setAudioSession];
         //获取音频文件存储路径
         NSURL *recordUrl = [self recordUrl];
-        //获取录音器配置
-        NSDictionary *recordDic = [self getAudioSetting];
+        //获取录音器配置  配置统一才能转换amr正常
+        NSDictionary *recordDic = [VoiceConverter GetAudioRecorderSettingDict];
         //初始化录音器
         NSError *recordError;
         _ysxRecord = [[AVAudioRecorder alloc]initWithURL:recordUrl settings:recordDic error:&recordError];
@@ -61,22 +61,6 @@ static soundRecord *_record;
     return url;
 }
 
-//录音器设置
--(NSDictionary *)getAudioSetting{
-    NSMutableDictionary *dicRecord=[NSMutableDictionary dictionary];
-    //设置录音格式
-    [dicRecord setObject:@(kAudioFormatLinearPCM) forKey:AVFormatIDKey];
-    //设置录音采样率，8000是电话采样率，对于一般录音已经够了
-    [dicRecord setObject:@(8000) forKey:AVSampleRateKey];
-    //设置通道,这里采用单声道
-    [dicRecord setObject:@(1) forKey:AVNumberOfChannelsKey];
-    //每个采样点位数,分为8、16、24、32
-    [dicRecord setObject:@(16) forKey:AVLinearPCMBitDepthKey];
-    //是否使用浮点数采样
-    [dicRecord setObject:@(YES) forKey:AVLinearPCMIsFloatKey];
-    //....其他设置等
-    return dicRecord;
-}
 #pragma mark - 录音开始
 - (void)startRecord
 {

@@ -2,7 +2,7 @@
 //  ViewController.m
 //  soundPlay
 //
-//  Created by LIU on 16/8/30.
+//  Created by 刘志德 on 16/8/30.
 //  Copyright © 2016年 LZD. All rights reserved.
 //
 
