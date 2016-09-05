@@ -24,10 +24,22 @@ static soundRecord *_record;
  *  设置音频会话
  */
 -(void)setAudioSession{
-    AVAudioSession *audioSession=[AVAudioSession sharedInstance];
-    //设置为播放和录音状态，以便可以在录制完之后播放录音
-    [audioSession setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
-    [audioSession setActive:YES error:nil];
+    AVAudioSession *session = [AVAudioSession sharedInstance];
+    
+    NSError *sessionError;
+    
+    [session setCategory:AVAudioSessionCategoryPlayAndRecord error:&sessionError];
+    
+    UInt32 audioRouteOverride = kAudioSessionOverrideAudioRoute_Speaker;
+    AudioSessionSetProperty (
+                             kAudioSessionProperty_OverrideAudioRoute,
+                             sizeof (audioRouteOverride),
+                             &audioRouteOverride
+                             );
+    if(session == nil)
+        NSLog(@"Error creating session: %@", [sessionError description]);
+    else
+        [session setActive:YES error:nil];
 }
 
 - (AVAudioRecorder *)ysxRecord
