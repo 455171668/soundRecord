@@ -24,13 +24,13 @@ static soundRecord *_record;
  *  设置音频会话
  */
 -(void)setAudioSession{
-    AVAudioSession *session = [AVAudioSession sharedInstance];
-    
+    AVAudioSession *session    = [AVAudioSession sharedInstance];
+
     NSError *sessionError;
-    
+
     [session setCategory:AVAudioSessionCategoryPlayAndRecord error:&sessionError];
-    
-    UInt32 audioRouteOverride = kAudioSessionOverrideAudioRoute_Speaker;
+
+    UInt32 audioRouteOverride  = kAudioSessionOverrideAudioRoute_Speaker;
     AudioSessionSetProperty (
                              kAudioSessionProperty_OverrideAudioRoute,
                              sizeof (audioRouteOverride),
@@ -47,21 +47,21 @@ static soundRecord *_record;
     if (!_ysxRecord) {
         [self setAudioSession];
         //获取音频文件存储路径
-        NSURL *recordUrl = [self recordUrl];
+    NSURL *recordUrl           = [self recordUrl];
         //获取录音器配置  配置统一才能转换amr正常
-        NSDictionary *recordDic = [VoiceConverter GetAudioRecorderSettingDict];
+    NSDictionary *recordDic    = [VoiceConverter GetAudioRecorderSettingDict];
         //初始化录音器
         NSError *recordError;
-        _ysxRecord = [[AVAudioRecorder alloc]initWithURL:recordUrl settings:recordDic error:&recordError];
-        _ysxRecord.delegate = self;
+    _ysxRecord                 = [[AVAudioRecorder alloc]initWithURL:recordUrl settings:recordDic error:&recordError];
+    _ysxRecord.delegate        = self;
         //检测声波，设置yes
-        _ysxRecord.meteringEnabled = YES;
+    _ysxRecord.meteringEnabled = YES;
         if (recordError) {
             return nil;
         }
     }
     return _ysxRecord;
-    
+
 }
 
 
@@ -76,7 +76,7 @@ static soundRecord *_record;
 #pragma mark - 录音开始
 - (void)startRecord
 {
-    isStop = NO;
+    isStop                     = NO;
     //判断该应用是否有麦克风权限
     if ([[AVAudioSession sharedInstance]respondsToSelector:@selector(requestRecordPermission:)]) {
         [[AVAudioSession sharedInstance]performSelector:@selector(requestRecordPermission:) withObject:^(BOOL isCanRecord){
@@ -98,13 +98,13 @@ static soundRecord *_record;
             [self.delegate soundRecordError:self withError:soundRecordErrorInit];
         }
     }
-    
+
 }
 
 #pragma mark - 录音结束
 - (void)stopRecord
 {
-    isStop = YES;
+    isStop                     = YES;
     if (self.ysxRecord) {
         [self.ysxRecord stop];
     }
@@ -120,7 +120,7 @@ static soundRecord *_record;
 {
     if (isStop) {
         if ([self.delegate respondsToSelector:@selector(soundRecordFinsh:withFile:)]) {
-            
+
             NSString *urlStr=[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
             NSString *soundPathWav=[urlStr stringByAppendingPathComponent:@"ysxtemp.wav"];
             NSString *soundPathAmr=[urlStr stringByAppendingPathComponent:@"ysxtemp.amr"];
@@ -131,10 +131,10 @@ static soundRecord *_record;
                     [self.delegate soundRecordError:self withError:soundRecordErrorRecord];
                 }
             }
-            
+
         }
     }
-    
+
 }
 - (void)audioRecorderEncodeErrorDidOccur:(AVAudioRecorder *)recorder
                                    error:(NSError *)error{
